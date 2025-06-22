@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Smart Timer</title>
+  <title>Blinking Timer</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 
   <!-- Fullscreen for iOS -->
@@ -26,7 +26,7 @@
 
     #timer {
       font-size: 5em;
-      margin: 0.2em 0;
+      margin: 0.3em 0;
     }
 
     .controls {
@@ -69,7 +69,7 @@
     <button onclick="togglePause()" id="pauseBtn">Pause</button>
   </div>
 
-  <div id="info">(tap anywhere to reset)</div>
+  <div id="info">(tap background to reset and restart)</div>
 
   <script>
     let defaultSeconds = 10;
@@ -135,9 +135,18 @@
       pauseBtn.textContent = paused ? "Resume" : "Pause";
     }
 
-    document.body.addEventListener("click", startTimer);
-    document.body.addEventListener("touchstart", startTimer);
+    // Only reset timer if clicking outside of buttons
+    document.body.addEventListener("click", (e) => {
+      if (e.target.tagName === "BUTTON") return;
+      startTimer();
+    });
 
+    document.body.addEventListener("touchstart", (e) => {
+      if (e.target.tagName === "BUTTON") return;
+      startTimer();
+    });
+
+    // Start initially
     startTimer();
   </script>
 </body>
