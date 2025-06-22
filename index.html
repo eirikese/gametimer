@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Blinking Timer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      background-color: black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 5em;
+      color: white;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+      font-family: Arial, sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div id="timer">10</div>
+
+  <script>
+    const START_SECONDS = 10;
+    let timeLeft = START_SECONDS;
+    let blinking = false;
+    let blinkInterval = null;
+    let timerInterval = null;
+
+    const timerDisplay = document.getElementById("timer");
+
+    function updateTimer() {
+      timeLeft--;
+      if (timeLeft <= 0) {
+        startBlinking();
+      } else {
+        timerDisplay.textContent = timeLeft;
+      }
+    }
+
+    function startTimer() {
+      stopBlinking();
+      timeLeft = START_SECONDS;
+      timerDisplay.textContent = timeLeft;
+      timerInterval = setInterval(updateTimer, 1000);
+    }
+
+    function startBlinking() {
+      clearInterval(timerInterval);
+      blinking = true;
+      blinkInterval = setInterval(() => {
+        document.body.style.backgroundColor =
+          document.body.style.backgroundColor === "black" ? "white" : "black";
+        timerDisplay.style.color =
+          document.body.style.backgroundColor === "black" ? "white" : "black";
+        timerDisplay.textContent = "TIME!";
+      }, 200);
+    }
+
+    function stopBlinking() {
+      if (blinking) {
+        clearInterval(blinkInterval);
+        blinking = false;
+      }
+      document.body.style.backgroundColor = "black";
+      timerDisplay.style.color = "white";
+    }
+
+    // Tap/click anywhere to restart
+    document.body.addEventListener("click", startTimer);
+    document.body.addEventListener("touchstart", startTimer);
+
+    // Start on page load
+    startTimer();
+  </script>
+</body>
+</html>
