@@ -2,10 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Blinking Timer</title>
+  <title>Rainbow Timer</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-
-  <!-- Fullscreen for iOS -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
@@ -25,7 +23,7 @@
     }
 
     #timer {
-      font-size: 5em;
+      font-size: 10em;
       margin: 0.3em 0;
     }
 
@@ -37,9 +35,15 @@
       margin: 10px 0;
     }
 
+    .pause-row {
+      margin-top: 10px;
+      display: flex;
+      justify-content: center;
+    }
+
     button {
-      font-size: 1.2em;
-      padding: 10px 15px;
+      font-size: 1.4em;
+      padding: 12px 18px;
       border: none;
       border-radius: 5px;
       background-color: #444;
@@ -52,7 +56,7 @@
     }
 
     #info {
-      font-size: 0.8em;
+      font-size: 0.9em;
       color: gray;
       margin-top: 1em;
     }
@@ -66,6 +70,9 @@
     <button onclick="adjustTime(-1)">−1s</button>
     <button onclick="adjustTime(1)">+1s</button>
     <button onclick="adjustTime(10)">+10s</button>
+  </div>
+
+  <div class="pause-row">
     <button onclick="togglePause()" id="pauseBtn">Pause</button>
   </div>
 
@@ -78,9 +85,15 @@
     let paused = false;
     let blinkInterval = null;
     let timerInterval = null;
+    let rainbowIndex = 0;
 
     const timerDisplay = document.getElementById("timer");
     const pauseBtn = document.getElementById("pauseBtn");
+
+    const rainbowColors = [
+      "#FF0000", "#FF7F00", "#FFFF00", "#00FF00",
+      "#0000FF", "#4B0082", "#8B00FF"
+    ];
 
     function updateTimer() {
       if (paused || blinking) return;
@@ -108,16 +121,18 @@
       blinking = true;
       timerDisplay.textContent = "TIME!";
       blinkInterval = setInterval(() => {
-        const isBlack = document.body.style.backgroundColor === "black";
-        document.body.style.backgroundColor = isBlack ? "white" : "black";
-        timerDisplay.style.color = isBlack ? "black" : "white";
-      }, 200);
+        const color = rainbowColors[rainbowIndex % rainbowColors.length];
+        document.body.style.backgroundColor = color;
+        timerDisplay.style.color = "#000";
+        rainbowIndex++;
+      }, 150);
     }
 
     function stopBlinking() {
       if (blinking) {
         clearInterval(blinkInterval);
         blinking = false;
+        rainbowIndex = 0;
       }
       document.body.style.backgroundColor = "black";
       timerDisplay.style.color = "white";
@@ -130,12 +145,11 @@
     }
 
     function togglePause() {
-      if (blinking) return; // can't pause during blinking
+      if (blinking) return;
       paused = !paused;
       pauseBtn.textContent = paused ? "Resume" : "Pause";
     }
 
-    // Only reset timer if clicking outside of buttons
     document.body.addEventListener("click", (e) => {
       if (e.target.tagName === "BUTTON") return;
       startTimer();
@@ -146,7 +160,6 @@
       startTimer();
     });
 
-    // Start initially
     startTimer();
   </script>
 </body>
